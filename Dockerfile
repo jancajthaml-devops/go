@@ -18,10 +18,10 @@ FROM debian:stretch-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
-    GOLANG_VERSION=1.11.2 \
+    GOLANG_VERSION=1.11.4 \
     LIBRARY_PATH=/usr/lib \
     LD_LIBRARY_PATH=/usr/lib \
-    GOPATH=/go \
+    GOROOT=/usr/local/go \
     CGO_ENABLED=1 \
     GOPATH=/go \
     GOARCH=amd64 \
@@ -35,23 +35,25 @@ RUN dpkg --add-architecture amd64
 
 RUN apt-get update && \
     \
+    echo "installing essentials" && \
     apt-get install -y --no-install-recommends \
       apt-utils \
-      ca-certificates>=20161130 \
+      curl \
+      ca-certificates \
       && \
     \
+    echo "installing debian packages" && \
     apt-get -y install --no-install-recommends \
-      git>=1:2.11.0-3 \
-      curl>=7.52.1-5 \
-      tar=1.29b-1.1 \
-      cmake=3.7.2-1 \
-      make=4.1-9.1 \
-      patch>=2.7.5-1 \
-      python=2.7.13-2 \
-      debhelper=10.2.5 \
-      config-package-dev=5.1.2 \
-      fakeroot=1.21-3.1 \
-      pkg-config>=0.29-4 \
+      git \
+      tar \
+      cmake \
+      make \
+      patch \
+      python \
+      debhelper \
+      config-package-dev \
+      fakeroot \
+      pkg-config \
       libsystemd-dev \
       gcc \
       gcc-arm-linux-gnueabi \
@@ -64,14 +66,18 @@ RUN apt-get update && \
       libc6-dev \
       libc6-dev-armhf-cross \
       \
+      libzmq5:amd64=4.2.1-4 \
+      libzmq5:armhf=4.2.1-4 \
       libzmq3-dev:amd64=4.2.1-4 \
       libzmq3-dev:armhf=4.2.1-4 \
+      \
       && \
     \
+    echo "installing go ${GOLANG_VERSION}" && \
     curl -sL "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" | tar xzf - -C /usr/local && \
-      mv /usr/local/go/bin/go /usr/bin/go && \
-      mv /usr/local/go/bin/godoc /usr/bin/godoc && \
-      mv /usr/local/go/bin/gofmt /usr/bin/gofmt && \
+      mv "${GOROOT}"/bin/go /usr/bin/go && \
+      mv "${GOROOT}"/bin/godoc /usr/bin/godoc && \
+      mv "${GOROOT}"/bin/gofmt /usr/bin/gofmt && \
     \
     curl -sL https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 -o /usr/bin/dep && \
       chmod +x /usr/bin/dep && \
@@ -88,6 +94,7 @@ RUN apt-get update && \
       github.com/client9/misspell/cmd/misspell \
       github.com/alexkohler/prealloc \
       github.com/mdempsky/maligned \
-      github.com/jgautheron/goconst/cmd/goconst && \
+      github.com/jgautheron/goconst/cmd/goconst \
+      && \
     \
     rm -rf /var/lib/apt/lists/* /tmp/*
