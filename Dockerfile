@@ -66,10 +66,10 @@ RUN apt-get update && \
       libc6-dev \
       libc6-dev-armhf-cross \
       \
-      libzmq5:amd64=4.2.1-4 \
-      libzmq5:armhf=4.2.1-4 \
-      libzmq3-dev:amd64=4.2.1-4 \
-      libzmq3-dev:armhf=4.2.1-4 \
+      libzmq5:amd64=4.2.1-4+deb9u1 \
+      libzmq5:armhf=4.2.1-4+deb9u1 \
+      libzmq3-dev:amd64=4.2.1-4+deb9u1 \
+      libzmq3-dev:armhf=4.2.1-4+deb9u1 \
       \
       && \
     \
