@@ -101,3 +101,7 @@ RUN apt-get update && \
       && \
     \
     rm -rf /var/lib/apt/lists/* /tmp/*
+
+COPY --from=jancajthaml/jq /usr/local/bin/jq /usr/bin/jq
+COPY --from=library/docker:18.06 /usr/local/bin/docker /usr/bin/docker
+
