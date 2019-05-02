@@ -59,9 +59,11 @@ RUN apt-get update && \
       gcc \
       gcc-arm-linux-gnueabi \
       gcc-arm-linux-gnueabihf \
+      gcc-aarch64-linux-gnu \
       g++ \
       g++-arm-linux-gnueabi \
       g++-arm-linux-gnueabihf \
+      g++-aarch64-linux-gnu \
       libc6 \
       libc6-armhf-cross \
       libc6-dev \
@@ -104,4 +106,3 @@ RUN apt-get update && \
 
 COPY --from=jancajthaml/jq /usr/local/bin/jq /usr/bin/jq
 COPY --from=library/docker:18.06 /usr/local/bin/docker /usr/bin/docker
-
