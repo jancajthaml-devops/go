@@ -14,10 +14,11 @@
 
 # ---------------------------------------------------------------------------- #
 
-FROM debian:stretch-slim
+FROM amd64/debian:stretch-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=no \
     GOLANG_VERSION=1.11.4 \
     LIBRARY_PATH=/usr/lib \
     LD_LIBRARY_PATH=/usr/lib \
@@ -55,7 +56,9 @@ RUN apt-get update && \
       config-package-dev \
       fakeroot \
       pkg-config \
-      libsystemd-dev \
+      libsystemd-dev:amd64 \
+      libsystemd-dev:armhf \
+      libsystemd-dev:arm64 \
       gcc \
       gcc-arm-linux-gnueabi \
       gcc-arm-linux-gnueabihf \
@@ -100,6 +103,7 @@ RUN apt-get update && \
       github.com/alexkohler/prealloc \
       github.com/mdempsky/maligned \
       github.com/jgautheron/goconst/cmd/goconst \
+      github.com/gordonklaus/ineffassign \
       && \
     \
     rm -rf /var/lib/apt/lists/* /tmp/*
