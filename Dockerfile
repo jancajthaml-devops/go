@@ -56,6 +56,7 @@ RUN apt-get update && \
       config-package-dev \
       fakeroot \
       pkg-config \
+      lintian \
       libsystemd-dev:amd64 \
       libsystemd-dev:armhf \
       libsystemd-dev:arm64 \
