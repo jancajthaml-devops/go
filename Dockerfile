@@ -19,7 +19,7 @@ FROM amd64/debian:stretch-slim
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
     APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=no \
-    GOLANG_VERSION=1.11.4 \
+    GOLANG_VERSION=1.12.6 \
     LIBRARY_PATH=/usr/lib \
     LD_LIBRARY_PATH=/usr/lib \
     GOROOT=/usr/local/go \
@@ -85,11 +85,15 @@ RUN apt-get update && \
     echo "installing go ${GOLANG_VERSION}" && \
     curl -sL "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" | tar xzf - -C /usr/local && \
       mv "${GOROOT}"/bin/go /usr/bin/go && \
+      ln -s /usr/bin/go "${GOROOT}"/bin/go && \
       mv "${GOROOT}"/bin/godoc /usr/bin/godoc && \
       mv "${GOROOT}"/bin/gofmt /usr/bin/gofmt && \
     \
     curl -sL https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 -o /usr/bin/dep && \
       chmod +x /usr/bin/dep && \
+    \
+    curl -sL https://github.com/tebeka/go2xunit/releases/download/v1.4.10/go2xunit-linux-amd64 -o /usr/bin/go2xunit && \
+      chmod +x /usr/bin/go2xunit && \
     \
     curl -sL https://github.com/Masterminds/glide/releases/download/v0.13.1/glide-v0.13.1-linux-amd64.tar.gz | tar xzf - -C /usr/lib && \
       mv /usr/lib/linux-amd64/glide /usr/bin/glide && \
