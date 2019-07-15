@@ -16,24 +16,29 @@
 
 FROM amd64/debian:stretch-slim
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    LANG=C.UTF-8 \
-    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=no \
-    GOLANG_VERSION=1.12.6 \
-    LIBRARY_PATH=/usr/lib \
-    LD_LIBRARY_PATH=/usr/lib \
-    GOROOT=/usr/local/go \
-    CGO_ENABLED=1 \
-    GOPATH=/go \
-    GOARCH=amd64 \
-    GOOS=linux \
-    GOHOSTOS=linux \
-    CC=gcc \
-    CXX=g++
+ENV container docker
+ENV LANG C.UTF-8
+ENV LC_ALL C
+ENV DEBIAN_FRONTEND noninteractive
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=no
+ENV GOLANG_VERSION 1.12.6
+ENV LIBRARY_PATH /usr/lib
+ENV LD_LIBRARY_PATH /usr/lib
+ENV GOROOT /usr/local/go
+ENV CGO_ENABLED 1
+ENV GOPATH /go
+ENV GOARCH amd64
+ENV GOOS linux
+ENV GOHOSTOS linux
+ENV CC gcc
+ENV CXX g++
 
 RUN dpkg --add-architecture armhf
 RUN dpkg --add-architecture amd64
 RUN dpkg --add-architecture arm64
+
+COPY grc/grc.conf /root/.grc/grc.conf
+COPY grc/conf.gotest /root/.grc/conf.gotest
 
 RUN apt-get update && \
     \
@@ -47,6 +52,7 @@ RUN apt-get update && \
     echo "installing debian packages" && \
     apt-get -y install --no-install-recommends \
       git \
+      grc \
       tar \
       cmake \
       make \
