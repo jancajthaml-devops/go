@@ -20,12 +20,13 @@ ENV container docker
 ENV LANG C.UTF-8
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=no
-ENV GOLANG_VERSION 1.12.7
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE no
+ENV GOLANG_VERSION 1.14.2
 ENV LIBRARY_PATH /usr/lib
 ENV LD_LIBRARY_PATH /usr/lib
 ENV GOROOT /usr/local/go
 ENV CGO_ENABLED 1
+ENV GO111MODULE on
 ENV GOPATH /go
 ENV GOARCH amd64
 ENV GOOS linux
@@ -92,7 +93,6 @@ RUN apt-get update && \
     curl -sL "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" | tar xzf - -C /usr/local && \
       mv "${GOROOT}"/bin/go /usr/bin/go && \
       ln -s /usr/bin/go "${GOROOT}"/bin/go && \
-      mv "${GOROOT}"/bin/godoc /usr/bin/godoc && \
       mv "${GOROOT}"/bin/gofmt /usr/bin/gofmt && \
     \
     curl -sL https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 -o /usr/bin/dep && \
