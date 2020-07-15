@@ -14,7 +14,7 @@
 
 # ---------------------------------------------------------------------------- #
 
-FROM amd64/debian:stretch-slim
+FROM amd64/debian:buster-slim
 
 ENV container docker
 ENV LANG C.UTF-8
