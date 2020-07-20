@@ -79,6 +79,7 @@ RUN apt-get update && \
       libc6-armhf-cross \
       libc6-dev \
       libc6-dev-armhf-cross \
+      build-essential \
       \
       libzmq5:amd64>=4.2.1~ \
       libzmq5:armhf>=4.2.1~ \
