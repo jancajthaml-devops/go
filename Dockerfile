@@ -46,7 +46,7 @@ RUN apt-get update && \
     echo "installing essentials" && \
     apt-get install -y --no-install-recommends \
       apt-utils \
-      curl \
+      wget \
       ca-certificates \
       && \
     \
@@ -55,8 +55,6 @@ RUN apt-get update && \
       git \
       grc \
       tar \
-      cmake \
-      make \
       patch \
       python \
       debhelper \
@@ -91,21 +89,21 @@ RUN apt-get update && \
       && \
     \
     echo "installing go ${GOLANG_VERSION}" && \
-    curl -sL "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" | tar xzf - -C /usr/local && \
+    wget -O - -o /dev/null "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" | tar xzf - -C /usr/local && \
       mv "${GOROOT}"/bin/go /usr/bin/go && \
       ln -s /usr/bin/go "${GOROOT}"/bin/go && \
       mv "${GOROOT}"/bin/gofmt /usr/bin/gofmt && \
     \
-    curl -sL https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64 -o /usr/bin/dep && \
+    wget -O /usr/bin/dep -o /dev/null "https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64" && \
       chmod +x /usr/bin/dep && \
     \
-    curl -sL https://github.com/tebeka/go2xunit/releases/download/v1.4.10/go2xunit-linux-amd64 -o /usr/bin/go2xunit && \
+    wget -O /usr/bin/go2xunit -o /dev/null "https://github.com/tebeka/go2xunit/releases/download/v1.4.10/go2xunit-linux-amd64" && \
       chmod +x /usr/bin/go2xunit && \
     \
-    curl -sL https://github.com/Masterminds/glide/releases/download/v0.13.1/glide-v0.13.1-linux-amd64.tar.gz | tar xzf - -C /usr/lib && \
+    wget -O - -o /dev/null "https://github.com/Masterminds/glide/releases/download/v0.13.1/glide-v0.13.1-linux-amd64.tar.gz" | tar xzf - -C /usr/lib && \
       mv /usr/lib/linux-amd64/glide /usr/bin/glide && \
     \
-    curl -sL https://github.com/securego/gosec/releases/download/1.2.0/gosec_1.2.0_linux_amd64.tar.gz | tar xzf - -C /usr/bin && \
+    wget -O - -o /dev/null "https://github.com/securego/gosec/releases/download/1.2.0/gosec_1.2.0_linux_amd64.tar.gz" | tar xzf - -C /usr/bin && \
     \
     go get -u \
       \
