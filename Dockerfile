@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2018, Jan Cajthaml <jan.cajthaml@gmail.com>
+# Copyright (c) 2017-2020, Jan Cajthaml <jan.cajthaml@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,7 +21,11 @@ ENV LANG C.UTF-8
 ENV LC_ALL C
 ENV DEBIAN_FRONTEND noninteractive
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE no
-ENV GOLANG_VERSION 1.14.2
+ENV LDFLAGS "-Wl,-z,-now -Wl,-z,relro"
+ENV GOFLAGS -buildmode=pie
+ENV CGO_ENABLED 1
+ENV GOLANG_VERSION 1.14.6
+ENV GOSEC_VERSION 2.4.0
 ENV LIBRARY_PATH /usr/lib
 ENV LD_LIBRARY_PATH /usr/lib
 ENV GOROOT /usr/local/go
@@ -33,38 +37,27 @@ ENV GOOS linux
 ENV GOHOSTOS linux
 ENV CC gcc
 ENV CXX g++
+ENV PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
 
 RUN dpkg --add-architecture armhf
 RUN dpkg --add-architecture amd64
 RUN dpkg --add-architecture arm64
 
-COPY grc/grc.conf /root/.grc/grc.conf
-COPY grc/conf.gotest /root/.grc/conf.gotest
-
-RUN apt-get update && \
-    \
-    echo "installing essentials" && \
-    apt-get install -y --no-install-recommends \
-      apt-utils \
-      wget \
-      ca-certificates \
-      && \
-    \
+RUN \
     echo "installing debian packages" && \
+    apt-get update && \
     apt-get -y install --no-install-recommends \
+      ca-certificates \
+      build-essential \
+      wget \
       git \
       grc \
       tar \
-      patch \
-      python \
+      fakeroot \
       debhelper \
       config-package-dev \
-      fakeroot \
       pkg-config \
       lintian \
-      libsystemd-dev:amd64 \
-      libsystemd-dev:armhf \
-      libsystemd-dev:arm64 \
       gcc \
       gcc-arm-linux-gnueabi \
       gcc-arm-linux-gnueabihf \
@@ -77,46 +70,53 @@ RUN apt-get update && \
       libc6-armhf-cross \
       libc6-dev \
       libc6-dev-armhf-cross \
-      build-essential \
-      \
       libzmq5:amd64>=4.2.1~ \
       libzmq5:armhf>=4.2.1~ \
       libzmq5:arm64>=4.2.1~ \
       libzmq3-dev:amd64>=4.2.1~ \
       libzmq3-dev:armhf>=4.2.1~ \
-      libzmq3-dev:arm64>=4.2.1~ \
-      \
-      && \
+      libzmq3-dev:arm64>=4.2.1~ && \
     \
+    apt-get clean autoclean && \
+    apt-get autoremove --yes && \
+    rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
+    :
+
+RUN \
     echo "installing go ${GOLANG_VERSION}" && \
-    wget -O - -o /dev/null "https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" | tar xzf - -C /usr/local && \
-      mv "${GOROOT}"/bin/go /usr/bin/go && \
-      ln -s /usr/bin/go "${GOROOT}"/bin/go && \
-      mv "${GOROOT}"/bin/gofmt /usr/bin/gofmt && \
     \
-    wget -O /usr/bin/dep -o /dev/null "https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64" && \
-      chmod +x /usr/bin/dep && \
+    wget -O - -o /dev/null \
+      "https://golang.org/dl/go${GOLANG_VERSION}.${GOHOSTOS}-${GOARCH}.tar.gz" | tar xzf - -C /usr/local && \
+      chmod +x "${GOROOT}"/bin/go && \
+      chmod +x "${GOROOT}"/bin/gofmt && \
     \
-    wget -O /usr/bin/go2xunit -o /dev/null "https://github.com/tebeka/go2xunit/releases/download/v1.4.10/go2xunit-linux-amd64" && \
+    wget -O /usr/bin/go2xunit -o /dev/null \
+      "https://github.com/tebeka/go2xunit/releases/download/v1.4.10/go2xunit-${GOHOSTOS}-${GOARCH}" && \
       chmod +x /usr/bin/go2xunit && \
     \
-    wget -O - -o /dev/null "https://github.com/Masterminds/glide/releases/download/v0.13.1/glide-v0.13.1-linux-amd64.tar.gz" | tar xzf - -C /usr/lib && \
-      mv /usr/lib/linux-amd64/glide /usr/bin/glide && \
-    \
-    wget -O - -o /dev/null "https://github.com/securego/gosec/releases/download/1.2.0/gosec_1.2.0_linux_amd64.tar.gz" | tar xzf - -C /usr/bin && \
-    \
+    wget -O - -o /dev/null \
+      "https://github.com/securego/gosec/releases/download/v${GOSEC_VERSION}/gosec_${GOSEC_VERSION}_${GOHOSTOS}_${GOARCH}.tar.gz" | tar xzf - -C /usr/bin && \
+    :
+
+RUN \
+    echo "installing go packages" && \
+    go install -v std && \
     go get -u \
-      \
       golang.org/x/lint/golint \
       github.com/fzipp/gocyclo \
       github.com/client9/misspell/cmd/misspell \
       github.com/alexkohler/prealloc \
       github.com/mdempsky/maligned \
       github.com/jgautheron/goconst/cmd/goconst \
-      github.com/gordonklaus/ineffassign \
-      && \
-    \
-    rm -rf /var/lib/apt/lists/* /tmp/*
+      github.com/gordonklaus/ineffassign && \
+    :
+
+COPY grc/grc.conf /root/.grc/grc.conf
+
+COPY grc/conf.gotest /root/.grc/conf.gotest
 
 COPY --from=jancajthaml/jq /usr/local/bin/jq /usr/bin/jq
+
 COPY --from=library/docker:18.06 /usr/local/bin/docker /usr/bin/docker
+
+ENTRYPOINT [ "go" ]
