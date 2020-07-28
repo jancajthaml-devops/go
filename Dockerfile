@@ -48,16 +48,11 @@ RUN \
     apt-get update && \
     apt-get -y install --no-install-recommends \
       ca-certificates \
-      build-essential \
       wget \
       git \
       grc \
       tar \
-      fakeroot \
-      debhelper \
-      config-package-dev \
       pkg-config \
-      lintian \
       gcc \
       gcc-arm-linux-gnueabi \
       gcc-arm-linux-gnueabihf \
@@ -114,9 +109,5 @@ RUN \
 COPY grc/grc.conf /root/.grc/grc.conf
 
 COPY grc/conf.gotest /root/.grc/conf.gotest
-
-COPY --from=jancajthaml/jq /usr/local/bin/jq /usr/bin/jq
-
-COPY --from=library/docker:18.06 /usr/local/bin/docker /usr/bin/docker
 
 ENTRYPOINT [ "go" ]
