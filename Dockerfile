@@ -38,6 +38,7 @@ ENV GOHOSTOS linux
 ENV CC gcc
 ENV CXX g++
 ENV PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+ENV XDG_CONFIG_HOME /usr/share
 
 RUN dpkg --add-architecture armhf
 RUN dpkg --add-architecture amd64
@@ -106,8 +107,8 @@ RUN \
       github.com/gordonklaus/ineffassign && \
     :
 
-COPY grc/grc.conf /root/.grc/grc.conf
+COPY grc/grc.conf /usr/share/grc/grc.conf
 
-COPY grc/conf.gotest /root/.grc/conf.gotest
+COPY grc/conf.gotest /usr/share/grc/conf.gotest
 
 ENTRYPOINT [ "go" ]
