@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2020, Jan Cajthaml <jan.cajthaml@gmail.com>
+# Copyright (c) 2017-2021, Jan Cajthaml <jan.cajthaml@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 
 # ---------------------------------------------------------------------------- #
 
-FROM amd64/debian:buster-slim
+FROM --platform=linux/amd64 amd64/debian:sid-slim
 
 ENV container docker
 ENV LANG C.UTF-8
@@ -24,7 +24,7 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE no
 ENV LDFLAGS "-Wl,-z,-now -Wl,-z,relro"
 ENV GOFLAGS -buildmode=pie
 ENV CGO_ENABLED 1
-ENV GOLANG_VERSION 1.15.7
+ENV GOLANG_VERSION 1.17.3
 ENV GOSEC_VERSION 2.5.0
 ENV LIBRARY_PATH /usr/lib
 ENV LD_LIBRARY_PATH /usr/lib
@@ -66,12 +66,12 @@ RUN \
       libc6-armhf-cross \
       libc6-dev \
       libc6-dev-armhf-cross \
-      libzmq5:amd64>=4.2.1~ \
-      libzmq5:armhf>=4.2.1~ \
-      libzmq5:arm64>=4.2.1~ \
-      libzmq3-dev:amd64>=4.2.1~ \
-      libzmq3-dev:armhf>=4.2.1~ \
-      libzmq3-dev:arm64>=4.2.1~ && \
+      libzmq5:amd64>=4.3~~ \
+      libzmq5:armhf>=4.3~~ \
+      libzmq5:arm64>=4.3~~ \
+      libzmq3-dev:amd64>=4.3~~ \
+      libzmq3-dev:armhf>=4.3~~ \
+      libzmq3-dev:arm64>=4.3~~ && \
     \
     apt-get clean autoclean && \
     apt-get autoremove --yes && \
