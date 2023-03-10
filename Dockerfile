@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2021, Jan Cajthaml <jan.cajthaml@gmail.com>
+# Copyright (c) 2017-2023, Jan Cajthaml <jan.cajthaml@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE no
 ENV LDFLAGS "-Wl,-z,-now -Wl,-z,relro"
 ENV GOFLAGS -buildmode=pie
 ENV CGO_ENABLED 1
-ENV GOLANG_VERSION 1.17.3
-ENV GOSEC_VERSION 2.5.0
+ENV GOLANG_VERSION 1.20.2
+ENV GOSEC_VERSION 2.15.0
 ENV LIBRARY_PATH /usr/lib
 ENV LD_LIBRARY_PATH /usr/lib
 ENV GOROOT /usr/local/go
@@ -97,14 +97,13 @@ RUN \
 RUN \
     echo "installing go packages" && \
     go install -v std && \
-    go get -u \
-      golang.org/x/lint/golint \
-      github.com/fzipp/gocyclo \
-      github.com/client9/misspell/cmd/misspell \
-      github.com/alexkohler/prealloc \
-      github.com/mdempsky/maligned \
-      github.com/jgautheron/goconst/cmd/goconst \
-      github.com/gordonklaus/ineffassign && \
+    go install -v golang.org/x/lint/golint@latest && \
+    go install -v github.com/fzipp/gocyclo/cmd/gocyclo@latest && \
+    go install -v github.com/client9/misspell/cmd/misspell@latest && \
+    go install -v github.com/alexkohler/prealloc@latest && \
+    go install -v github.com/mdempsky/maligned@latest && \
+    go install -v github.com/jgautheron/goconst/cmd/goconst@latest && \
+    go install -v github.com/gordonklaus/ineffassign@latest && \
     :
 
 COPY grc/grc.conf /usr/share/grc/grc.conf
